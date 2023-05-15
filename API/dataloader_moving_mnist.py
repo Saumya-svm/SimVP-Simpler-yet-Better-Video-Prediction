@@ -21,12 +21,12 @@ def load_fixed_set(root):
     filename = 'moving_mnist/mnist_test_seq.npy'
     path = os.path.join(root, filename)
     dataset = np.load(path)
-    dataset = dataset[..., np.newaxis]
+    dataset = dataset[:11,:,:,:][..., np.newaxis]
     return dataset
 
 
 class MovingMNIST(data.Dataset):
-    def __init__(self, root, is_train=True, n_frames_input=10, n_frames_output=10, num_objects=[2],
+    def __init__(self, root, is_train=True, n_frames_input=10, n_frames_output=1, num_objects=[2],
                  transform=None):
         super(MovingMNIST, self).__init__()
 
@@ -37,8 +37,9 @@ class MovingMNIST(data.Dataset):
             if num_objects[0] != 2:
                 self.mnist = load_mnist(root)
             else:
+                print('errorrr')
                 self.dataset = load_fixed_set(root)
-        self.length = int(1e4) if self.dataset is None else self.dataset.shape[1]
+        self.length = int(1e3) if self.dataset is None else self.dataset.shape[1]
 
         self.is_train = is_train
         self.num_objects = num_objects
@@ -122,10 +123,13 @@ class MovingMNIST(data.Dataset):
             # Generate data on the fly
             images = self.generate_moving_mnist(num_digits)
         else:
+            print('hello')
+            print(self.dataset.shape)
             images = self.dataset[:, idx, ...]
 
         r = 1
         w = int(64 / r)
+        print("Shape of Images : ",images.shape)
         images = images.reshape((length, w, r, w, r)).transpose(
             0, 2, 4, 1, 3).reshape((length, r * r, w, w))
 
@@ -148,9 +152,9 @@ def load_data(
         data_root, num_workers):
 
     train_set = MovingMNIST(root=data_root, is_train=True,
-                            n_frames_input=10, n_frames_output=10, num_objects=[2])
+                            n_frames_input=10, n_frames_output=1, num_objects=[2])
     test_set = MovingMNIST(root=data_root, is_train=False,
-                           n_frames_input=10, n_frames_output=10, num_objects=[2])
+                           n_frames_input=10, n_frames_output=1, num_objects=[2])
 
     dataloader_train = torch.utils.data.DataLoader(
         train_set, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=num_workers)
