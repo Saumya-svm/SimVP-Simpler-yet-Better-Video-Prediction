@@ -13,7 +13,7 @@ def load_mnist(root):
     with gzip.open(path, 'rb') as f:
         mnist = np.frombuffer(f.read(), np.uint8, offset=16)
         mnist = mnist.reshape(-1, 28, 28)
-    return mnist[:1000]
+    return mnist
 
 
 def load_fixed_set(root):
