@@ -38,17 +38,17 @@ def load_data(
     target = np.array(target)
 
     # prepare input and target arrays
-    image_1d = target.reshape(-1,192)
+    # image_1d = target.reshape(-1,192)
     X = []
     y = []
     for i in range(target.shape[0]-16):
-        X.append(image_1d[i:i+8,:])
+        X.append(target[i:i+8,:])
         y.append(target[i+8:i+16,:,:])
 
     X = np.array(X)
-    # X = X.reshape(X.shape[0], 8, target.shape[1], target.shape[2], 1)
+    X = X.reshape(X.shape[0], 8, target.shape[1], target.shape[2], 1)
     y = np.array(y)
-    # y = y.reshape(X.shape[0], target.shape[1], target.shape[2], 1)
+    y = y.reshape(X.shape[0], 8,target.shape[1], target.shape[2], 1)
 
     train_size = int(X.shape[0]*0.8)
     X_train, Y_train = X[:train_size], y[:train_size]
