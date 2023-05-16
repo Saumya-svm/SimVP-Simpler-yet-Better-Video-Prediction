@@ -46,9 +46,9 @@ def load_data(
         y.append(target[i+8:i+16,:,:])
 
     X = np.array(X)
-    X = X.reshape(X.shape[0], 8, target.shape[1], target.shape[2], 1)
+    X = X.reshape(X.shape[0], 8, 1, target.shape[1], target.shape[2])
     y = np.array(y)
-    y = y.reshape(X.shape[0], 8,target.shape[1], target.shape[2], 1)
+    y = y.reshape(X.shape[0], 8, 1,target.shape[1], target.shape[2])
 
     train_size = int(X.shape[0]*0.8)
     X_train, Y_train = X[:train_size], y[:train_size]
