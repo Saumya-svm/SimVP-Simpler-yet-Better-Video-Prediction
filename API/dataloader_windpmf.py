@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from torch.utils.data import Dataset
+import os
 
 
 class WindPMFDataset(Dataset):
@@ -40,9 +41,9 @@ def load_data(
     image_1d = target.reshape(-1,192)
     X = []
     y = []
-    for i in range(target.shape[0]-8):
+    for i in range(target.shape[0]-16):
         X.append(image_1d[i:i+8,:])
-        y.append(target[i+8,:])
+        y.append(target[i+8:i+16,:,:])
 
     X = np.array(X)
     # X = X.reshape(X.shape[0], 8, target.shape[1], target.shape[2], 1)
@@ -62,3 +63,10 @@ def load_data(
         test_set, batch_size=val_batch_size, shuffle=False, pin_memory=True, num_workers=num_workers)
 
     return dataloader_train, None, dataloader_test, 0, 1
+
+if __name__ == '__main__':
+    train, _, test,_,_ = load_data(32,32,'data/',8)
+    for x, y in train:
+        print(x.size())
+        print(y.size())
+        break
