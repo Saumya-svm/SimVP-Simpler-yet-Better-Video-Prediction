@@ -8,7 +8,9 @@ class WindPMFDataset(Dataset):
     def __init__(self, X, Y):
         super(WindPMFDataset, self).__init__()
         self.X = X 
-        self.Y = Y 
+        self.Y = Y
+        self.mean = np.mean(X)
+        self.std = 1
     
     def __len__(self):
         return self.X.shape[0]

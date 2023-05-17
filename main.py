@@ -1,5 +1,7 @@
 import argparse
 from exp import Exp
+from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -42,6 +44,23 @@ if __name__ == '__main__':
 
     exp = Exp(args)
     print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>  start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-    exp.train(args)
+    model = exp.train(args)
     print('>>>>>>>>>>>>>>>>>>>>>>>>>>>> testing <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
     mse = exp.test(args)
+
+    train_pbar = tqdm(exp.train_loader)
+    for batch_x, batch_y in train_pbar:
+      batch_x, batch_y = batch_x.to(exp.device), batch_y.to(exp.device)
+      pred_y = model(batch_x)
+      break
+    batch_y = batch_y.cpu().detach().numpy()
+    pred_y = pred_y.cpu().detach().numpy()
+    print(type(batch_y), type(pred_y))
+    index = 0
+    fig, ax = plt.subplots(nrows=2, ncols=8, figsize=(40, 40))
+    for i in range(8):
+      ax[0,i].imshow(batch_y[index, i, 0, :,:])
+      ax[1,i].imshow(pred_y[index, i, 0, :,:])
+    plt.savefig('results/plot.png')
+    plt.show()
+    print(pred_y.shape)
